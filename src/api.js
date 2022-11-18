@@ -1,11 +1,14 @@
 const express = require("express");
 const bodyParser = require('body-parser')
 const serverless = require("serverless-http");
+var cors = require('cors')
 
 const app = express();
 const router = express.Router();
 var Twit = require('twit')
 require('dotenv').config()
+
+app.use(cors())
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
