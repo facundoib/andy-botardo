@@ -13,7 +13,6 @@ router.get("/", (req, res) => {
 });
 
 router.post('/tweet', function(req, res, next) {
-  console.log(req.body)
   var T = new Twit({
     consumer_key:         process.env.C_KEY,
     consumer_secret:      process.env.C_SECRET_KEY,
@@ -24,8 +23,9 @@ router.post('/tweet', function(req, res, next) {
   });
 
   T.post('statuses/update', { status: req.body.message }, function(err, data, response) {
-    console.log(data)
-    console.log( `req ${req.body.message}, res ${response}`)
+    res.json({
+      result: `req: ${req.body.message}, res: ${response}, data: ${data}`
+    });
   })
 
   res.json({
