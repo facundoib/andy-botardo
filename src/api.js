@@ -1,10 +1,17 @@
 const express = require("express");
+const bodyParser = require('body-parser')
 const serverless = require("serverless-http");
 
 const app = express();
 const router = express.Router();
 var Twit = require('twit')
 require('dotenv').config()
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 router.get("/", (req, res) => {
   res.json({
@@ -14,32 +21,17 @@ router.get("/", (req, res) => {
 
 router.post('/tweet', (req, res) => {
   var T = new Twit({
-    consumer_key: process.env.C_KEY,
-    consumer_secret: process.env.C_SECRET_KEY,
-    access_token: process.env.A_TOKEN,
-    access_token_secret: process.env.A_SECRET_TOKEN,
-    timeout_ms: 60 * 1000,
-    strictSSL: true,
+    consumer_key:         process.env.C_KEY,
+    consumer_secret:      process.env.C_SECRET_KEY,
+    access_token:         process.env.A_TOKEN,
+    access_token_secret:  process.env.A_SECRET_TOKEN,
+    timeout_ms:           60*1000,
+    strictSSL:            true,
   });
-  const body = []
 
-  try {
-    req.on('data', (data) => {
-      body.push(data)
-    })
+  T.post('statuses/update', { status: req.body.message }, function(err, data, response) {})
 
-    req.on('end', () => {
-      T.post('statuses/update', { status: JSON.parse(Buffer.concat(body).toString()).message }, function (err, data, response) {
-        console.log(data)
-        console.log(JSON.parse(Buffer.concat(body).toString()).message)
-        console.log(response)
-      })
-    })
-  } catch (error) {
-    res.send("Error");
-  }
-
-  res.send("Ok");
+  res.send("ok");
 });
 
 
