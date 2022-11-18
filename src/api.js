@@ -29,9 +29,8 @@ router.post('/tweet', (req, res) => {
     strictSSL:            true,
   });
 
-  T.post('statuses/update', { status: req.body.message }, function(err, data, response) {})
+  T.post('statuses/update', { status: req.body.message }, function(err, data, response) { res.send(response) })
 
-  res.send("ok");
 });
 
 
