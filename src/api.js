@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/tweet', function(req, res, next) {
   console.log(req.body)
   var T = new Twit({
     consumer_key:         process.env.C_KEY,
@@ -28,7 +28,9 @@ router.post('/', function(req, res, next) {
     console.log( `req ${req.body.message}, res ${response}`)
   })
 
-  res.send();
+  res.json({
+    hello: response
+  });
 });
 
 
