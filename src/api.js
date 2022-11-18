@@ -21,16 +21,17 @@ router.post('/tweet', function(req, res, next) {
     timeout_ms:           60*1000,
     strictSSL:            true,
   });
-
-  T.post('statuses/update', { status: req.body.message }, function(err, data, response) {
+  try {
+    T.post('statuses/update', { status: req.body.message }, function(err, data, response) {
+      res.json({
+        result: `req: ${req.body.message}, res: ${response}, data: ${data}`
+      });
+    })
+  } catch (error) {
     res.json({
-      result: `req: ${req.body.message}, res: ${response}, data: ${data}`
+      error
     });
-  })
-
-  res.json({
-    hello: response
-  });
+  }
 });
 
 
