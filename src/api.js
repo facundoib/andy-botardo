@@ -12,26 +12,34 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post('/tweet', function(req, res, next) {
+router.post('/tweet', (req, res) => {
   var T = new Twit({
-    consumer_key:         process.env.C_KEY,
-    consumer_secret:      process.env.C_SECRET_KEY,
-    access_token:         process.env.A_TOKEN,
-    access_token_secret:  process.env.A_SECRET_TOKEN,
-    timeout_ms:           60*1000,
-    strictSSL:            true,
+    consumer_key: process.env.C_KEY,
+    consumer_secret: process.env.C_SECRET_KEY,
+    access_token: process.env.A_TOKEN,
+    access_token_secret: process.env.A_SECRET_TOKEN,
+    timeout_ms: 60 * 1000,
+    strictSSL: true,
   });
+  const body = []
+
   try {
-    T.post('statuses/update', { status: req.body.message }, function(err, data, response) {
-      res.json({
-        result: `req: ${req.body.message}, res: ${response}, data: ${data}`
-      });
+    req.on('data', (data) => {
+      body.push(data)
+    })
+
+    req.on('end', () => {
+      T.post('statuses/update', { status: JSON.parse(Buffer.concat(body).toString()).message }, function (err, data, response) {
+        console.log(data)
+        console.log(JSON.parse(Buffer.concat(body).toString()).message)
+        console.log(response)
+      })
     })
   } catch (error) {
-    res.json({
-      error
-    });
+    res.send("Error");
   }
+
+  res.send("Ok");
 });
 
 
